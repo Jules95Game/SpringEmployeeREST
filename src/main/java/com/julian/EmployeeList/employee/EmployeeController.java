@@ -48,7 +48,7 @@ public class EmployeeController {
             return ResponseEntity.notFound().build();
         } else {
             employeeRepository.delete(oldEmployee.get());
-            return ResponseEntity.ok(oldEmployee.get());
+            return ResponseEntity.noContent().build();
         }
     }
 
