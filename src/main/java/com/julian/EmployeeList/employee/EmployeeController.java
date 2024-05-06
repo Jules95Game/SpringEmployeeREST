@@ -18,6 +18,10 @@ public class EmployeeController {
 
     private final EmployeeRepository employeeRepository;
 
+    private ResponseEntity<Employee> notFound() {
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping
     public List<Employee> findAll() {
         return employeeRepository.findAll();
@@ -27,7 +31,7 @@ public class EmployeeController {
     public ResponseEntity<Employee> getById(@PathVariable UUID id) {
         Optional<Employee> employee = employeeRepository.findById(id);
         if (employee.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return notFound();
         } else {
             return ResponseEntity.ok(employee.get());
         }
@@ -45,7 +49,7 @@ public class EmployeeController {
     public ResponseEntity<Employee> deleteEmployee(@PathVariable UUID id) {
         Optional<Employee> oldEmployee = employeeRepository.findById(id);
         if (oldEmployee.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return notFound();
         } else {
             employeeRepository.delete(oldEmployee.get());
             return ResponseEntity.noContent().build();
@@ -56,9 +60,8 @@ public class EmployeeController {
     public ResponseEntity<Employee> updateEmployee(@PathVariable UUID id,
                                                    @RequestBody Employee replacementEmployee,
                                                    UriComponentsBuilder ucb) {
-        Optional<Employee> employee = employeeRepository.findById(id);
-        if (employee.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (!employeeRepository.existsById(id)) {
+            return notFound();
         } else {
             replacementEmployee.setId(id);
             Employee updatedEmployee = employeeRepository.save(replacementEmployee);
