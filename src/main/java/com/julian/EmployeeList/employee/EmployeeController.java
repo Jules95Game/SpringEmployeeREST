@@ -26,10 +26,10 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getById(@PathVariable UUID id) {
         Optional<Employee> employee = employeeRepository.findById(id);
-        if (employee.isPresent()) {
-            return ResponseEntity.ok(employee.get());
-        } else {
+        if (employee.isEmpty()) {
             return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(employee.get());
         }
     }
 
@@ -44,11 +44,11 @@ public class EmployeeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Employee> deleteEmployee(@PathVariable UUID id) {
         Optional<Employee> oldEmployee = employeeRepository.findById(id);
-        if (oldEmployee.isPresent()) {
+        if (oldEmployee.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
             employeeRepository.delete(oldEmployee.get());
             return ResponseEntity.ok(oldEmployee.get());
-        } else {
-            return ResponseEntity.notFound().build();
         }
     }
 }
