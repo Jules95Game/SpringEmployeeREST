@@ -51,4 +51,19 @@ public class EmployeeController {
             return ResponseEntity.ok(oldEmployee.get());
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable UUID id,
+                                                   @RequestBody Employee replacementEmployee,
+                                                   UriComponentsBuilder ucb) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        if (employee.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            replacementEmployee.setId(id);
+            Employee updatedEmployee = employeeRepository.save(replacementEmployee);
+            URI location = ucb.path("employees/{id}").buildAndExpand(updatedEmployee.getId()).toUri();
+            return ResponseEntity.created(location).body(updatedEmployee);
+        }
+    }
 }
