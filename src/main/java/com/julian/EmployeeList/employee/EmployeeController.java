@@ -2,6 +2,8 @@ package com.julian.EmployeeList.employee;
 
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -18,6 +20,8 @@ public class EmployeeController {
 
     private final EmployeeRepository employeeRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
+
     private ResponseEntity<Employee> notFound() {
         return ResponseEntity.notFound().build();
     }
@@ -31,6 +35,11 @@ public class EmployeeController {
     public ResponseEntity<Employee> getById(@PathVariable UUID id) {
         Optional<Employee> employee = employeeRepository.findById(id);
         if (employee.isEmpty()) {
+            logger.trace("Could not find Employee with id:%s".formatted(id));
+            logger.debug("Could not find Employee with id:%s".formatted(id));
+            logger.info("Could not find Employee with id:%s".formatted(id));
+            logger.warn("Could not find Employee with id:%s".formatted(id));
+            logger.error("Could not find Employee with id:%s".formatted(id));
             return notFound();
         } else {
             return ResponseEntity.ok(employee.get());
