@@ -27,8 +27,11 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> findAll() {
-        return employeeRepository.findAll();
+    public List<Employee> findAll(@RequestParam String contains,
+                                  @RequestParam(name = "max-age", required = false) Integer maxAge) {
+//        return employeeRepository.findAll();
+        return maxAge == null ? employeeRepository.findByNameContainsIgnoreCase(contains) :
+                employeeRepository.findByNameContainsIgnoreCaseAndAgeLessThanEqual(contains, maxAge);
     }
 
     @GetMapping("/{id}")
